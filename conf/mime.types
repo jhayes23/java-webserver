@@ -1,0 +1,193 @@
+# This is a comment. I love comments.
+
+# This file controls what Internet media types are sent to the client for
+# given file extension(s).  Sending the correct media type to the client
+# is important so they know how to handle the content of the file.
+# Extra types can either be added here or by using an AddType directive
+# in your config files. For more information about Internet media types,
+# please read RFC 2045, 2046, 2047, 2048, and 2077.  The Internet media type
+# registry is at <http://www.iana.org/assignments/media-types/>.
+
+# MIME type			Extensions
+application/mathml+xml		mathml
+application/msword		doc
+application/octet-stream	bin dms lha lzh exe class so dll
+application/oda			oda
+application/ogg			ogg
+application/pdf			pdf
+application/pgp-encrypted
+application/pgp-keys
+application/pgp-signature
+application/postscript		ai eps ps
+application/rdf+xml		rdf
+application/reginfo+xml
+application/smil		smi smil
+application/srgs		gram
+application/srgs+xml		grxml
+application/voicexml+xml	vxml
+application/wordperfect5.1
+application/x-bcpio		bcpio
+application/x-cdlink		vcd
+application/x-chess-pgn		pgn
+application/x-compress
+application/x-cpio		cpio
+application/x-csh		csh
+application/x-director		dcr dir dxr
+application/x-dvi		dvi
+application/x-futuresplash	spl
+application/x-gtar		gtar
+application/x-gzip
+application/x-hdf		hdf
+application/x-javascript	js
+application/x-koan		skp skd skt skm
+application/x-latex		latex
+application/x-netcdf		nc cdf
+application/x-sh		sh
+application/x-shar		shar
+application/x-shockwave-flash	swf
+application/x-stuffit		sit
+application/x-sv4cpio		sv4cpio
+application/x-sv4crc		sv4crc
+application/x-tar		tar
+application/x-tcl		tcl
+application/x-tex		tex
+application/x-texinfo		texinfo texi
+application/x-troff		t tr roff
+application/x-troff-man		man
+application/x-troff-me		me
+application/x-troff-ms		ms
+application/x-ustar		ustar
+application/x-wais-source	src
+application/x400-bp
+application/xhtml+xml		xhtml xht
+application/xslt+xml		xslt
+application/xml			xml xsl
+application/xml-dtd		dtd
+application/xml-external-parsed-entity
+application/zip			zip
+audio/32kadpcm
+audio/amr
+audio/amr-wb
+audio/basic			au snd
+audio/cn
+audio/dat12
+audio/dsr-es201108
+audio/dvi4
+audio/evrc
+audio/evrc0
+audio/g722
+audio/g.722.1
+audio/g723
+audio/g726-16
+audio/g726-24
+audio/g726-32
+audio/g726-40
+audio/g728
+audio/g729
+audio/g729D
+audio/g729E
+audio/gsm
+audio/gsm-efr
+audio/l8
+audio/l16
+audio/l20
+audio/l24
+audio/lpc
+audio/midi			mid midi kar
+audio/mpa
+audio/mpa-robust
+audio/mp4a-latm
+audio/mpeg			mpga mp2 mp3
+audio/parityfec
+audio/pcma
+audio/pcmu
+audio/prs.sid
+audio/qcelp
+audio/red
+audio/smv
+audio/smv0
+audio/telephone-event
+audio/tone
+audio/vdvi
+audio/vnd.3gpp.iufp
+audio/vnd.cisco.nse
+audio/vnd.cns.anp1
+audio/vnd.cns.inf1
+audio/vnd.digital-winds
+audio/vnd.everad.plj
+audio/vnd.lucent.voice
+audio/vnd.nortel.vbk
+audio/vnd.nuera.ecelp4800
+audio/vnd.nuera.ecelp7470
+audio/vnd.nuera.ecelp9600
+audio/vnd.octel.sbc
+audio/vnd.qcelp
+audio/vnd.rhetorex.32kadpcm
+audio/vnd.vmx.cvsd
+audio/x-aiff			aif aiff aifc
+audio/x-alaw-basic
+audio/x-mpegurl			m3u
+audio/x-pn-realaudio		ram rm
+audio/x-pn-realaudio-plugin	rpm
+audio/x-realaudio		ra
+audio/x-wav			wav
+chemical/x-pdb			pdb
+chemical/x-xyz			xyz
+image/bmp			bmp
+image/cgm			cgm
+image/g3fax
+image/gif			gif
+image/ief			ief
+image/jpeg			jpeg jpg jpe
+image/png			png
+image/svg+xml			svg
+image/tiff			tiff tif
+image/tiff-fx
+image/x-cmu-raster		ras
+image/x-icon			ico
+image/x-portable-anymap		pnm
+image/x-portable-bitmap		pbm
+image/x-portable-graymap	pgm
+image/x-portable-pixmap		ppm
+image/x-rgb			rgb
+image/x-xbitmap			xbm
+image/x-xpixmap			xpm
+image/x-xwindowdump		xwd
+model/iges			igs iges
+model/mesh			msh mesh silo
+model/vrml			wrl vrml
+multipart/alternative
+multipart/appledouble
+multipart/byteranges
+multipart/digest
+multipart/encrypted
+multipart/form-data
+multipart/header-set
+multipart/mixed
+multipart/parallel
+multipart/related
+multipart/report
+multipart/signed
+multipart/voice-message
+text/calendar			ics ifb
+text/css			css
+text/directory
+text/enriched
+text/html			html htm
+text/parityfec
+text/plain			asc txt
+text/prs.lines.tag
+text/rfc822-headers
+text/richtext			rtx
+text/rtf			rtf
+text/sgml			sgml sgm
+text/tab-separated-values	tsv
+text/x-setext			etx
+text/xml xml
+text/xml-external-parsed-entity
+video/mpeg			mpeg mpg mpe
+video/quicktime			qt mov
+video/x-msvideo			avi
+video/x-sgi-movie		movie
+x-conference/x-cooltalk		ice
+application/json json
