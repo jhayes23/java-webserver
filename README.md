@@ -2,10 +2,10 @@
 
 ## Team Information
 
-| Full Name | Course (Select one) | Section (Select one) |
-| --------- | ------------------- | -------------------- |
-|           | 667 867             | 1 2                  |
-|           | 667 867             | 1 2                  |
+| Full Name    | Course | Section |
+|--------------|--------|---------|
+| Joshua Hayes | 667    | 1       |
+| Andy Shi     | 667    | 1       |
 
 ## Description of Architecture
 
