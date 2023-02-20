@@ -1,3 +1,4 @@
 *.class
 /.idea/
 /webserver-team-l.iml
+/out/production/webserver-team-l/
