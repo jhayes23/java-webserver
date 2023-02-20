@@ -11,6 +11,7 @@ public class ConfReader extends Reader {
 
             while(reader.ready()){
                 if(line.trim().length() !=0 && !line.startsWith("#")){
+
                     System.out.println(line);
                 }
                 line = reader.readLine();
