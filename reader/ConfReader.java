@@ -1,6 +1,7 @@
 package reader;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class ConfReader extends Reader {
 
@@ -11,8 +12,9 @@ public class ConfReader extends Reader {
 
             while(reader.ready()){
                 if(line.trim().length() !=0 && !line.startsWith("#")){
+                    String[] splitLine = line.split("\\s+");
 
-                    System.out.println(line);
+                    System.out.println(Arrays.toString(splitLine));
                 }
                 line = reader.readLine();
             }
