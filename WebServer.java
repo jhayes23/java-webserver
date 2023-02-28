@@ -1,5 +1,7 @@
+import ResponseRequest.HTTPMessage;
 import reader.ConfData;
 import reader.ConfReader;
+import reader.HTTPReader;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -20,16 +22,24 @@ public class WebServer {
 
             while (true) {
                 Socket socket = server.accept();
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String line = in.readLine();
-                if (line != null) {
-                    System.out.println(Arrays.toString(line.split(" / ")));
+                HTTPReader httpReader = new HTTPReader(socket);
+                HTTPMessage request;
+                if (httpReader.read() == null) { //works around first socket read null
+                    socket.close();
+                } else {
+                    request = httpReader.read();
                 }
-                line = in.readLine();
-                while (line != null) {
-                    System.out.println(line);
-                    line = in.readLine();
-                }
+//                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                String line = in.readLine();
+//                //System.out.println(line);
+//                if (line != null) {
+//                    System.out.println(Arrays.toString(line.split(" / ")));
+//                }
+//                line = in.readLine();
+//                while (line != null) {
+//                    System.out.println(line);
+//                    line = in.readLine();
+//                }
                 socket.close();
             }
         } catch (IOException e) {

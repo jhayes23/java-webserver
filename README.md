@@ -37,7 +37,7 @@ Describe how you tested your system - how did you verify each of the points in t
 (-2) Poorly selected identifiers |
 | [] | _3 points_ | Methods/Classes are small and serve a single purpose | (-1) Method is run on (contains multiple responsiblities that should have been refactored into separate functions)  
 (-2) Poor class design (SRP violation, missing access modifiers, etc) |
-| [] | _2 points_ | Code is well organized into a meaningful file structure | (-1) Should use packages to organize related code (i.e. config, response, etc.) |
+| [] | _2 points_ | Code is well organized into a meaningful file structure | (-1) Should use packages to organize related code (i.e. config, ResponseRequest, etc.) |
 
 ### Documentation (30 points)
 
@@ -67,7 +67,7 @@ Describe how you tested your system - how did you verify each of the points in t
 | Completed                         | Points     | Description                                                                | Deductions                                                      |
 | --------------------------------- | ---------- | -------------------------------------------------------------------------- | --------------------------------------------------------------- |
 | []                                | _2 points_ | 200                                                                        |                                                                 |
-| []                                | _2 points_ | 201                                                                        | (-1) Failed to send created response code  
+| []                                | _2 points_ | 201                                                                        | (-1) Failed to send created ResponseRequest code  
 (-1) Does not add content to file |
 | []                                | _2 points_ | 204                                                                        |                                                                 |
 | []                                | _2 points_ | 400                                                                        | (-2) Failed to return 400 with improper request                 |
