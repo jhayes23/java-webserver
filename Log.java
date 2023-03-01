@@ -13,9 +13,7 @@ public class Log{
         Path file = Paths.get(path);
             try {
                 if(!Files.exists(file)){
-                    int endOfDirectory = path.lastIndexOf('/');
-                    Path directory = Paths.get(path.substring(0,endOfDirectory));
-                    Files.createDirectories(directory);
+                    Files.createDirectories(file.toAbsolutePath().getParent());
                     Files.createFile(file);
                 }
                     writer = new PrintWriter(new FileOutputStream(path,true),true);
