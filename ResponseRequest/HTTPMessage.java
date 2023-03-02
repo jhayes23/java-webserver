@@ -1,6 +1,7 @@
 package ResponseRequest;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class HTTPMessage {
 
@@ -10,6 +11,7 @@ public class HTTPMessage {
         public StartLine(String version) {
             this.version = version;
         }
+
     }
     public static class ResponseStartLine extends StartLine{
         public ResponseCode responseCode;
@@ -17,6 +19,11 @@ public class HTTPMessage {
         public ResponseStartLine(ResponseCode responseCode, String version) {
             super(version);
             this.responseCode = responseCode;
+        }
+
+        @Override
+        public String toString() {
+            return version + " " + responseCode;
         }
     }
 
@@ -28,6 +35,11 @@ public class HTTPMessage {
             super(version);
             this.method = method;
             this.target = target;
+        }
+
+        @Override
+        public String toString() {
+            return method + " " + target + " " + version;
         }
     }
 
@@ -79,10 +91,12 @@ public class HTTPMessage {
 
     @Override
     public String toString() {
-        return "HTTPMessage{" +
-                "startLine=" + startLine +
-                ", headers=" + headers +
-                ", body='" + body + '\'' +
-                '}';
+        //System.out.println("HTTP ToString");
+        String output = startLine.toString() + "\n";
+        for (Map.Entry<String, String> entry: headers.entrySet()) {
+            output += entry.getKey() + ": " + entry.getValue() + "\n";
+        }
+        output += "\n" + body;
+        return output;
     }
 }
