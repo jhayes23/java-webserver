@@ -51,12 +51,12 @@ public class HTTPReader extends Reader {
         request.setStartLine(new HTTPMessage.RequestStartLine(methodEnum, startLineSplit[1].trim(), startLineSplit[2].trim()));
         line = reader.readLine();
         while (!line.trim().equals("")) {
-            System.out.println(line);
+            //System.out.println(line);
             String[] headerLineSplit = line.split(":");
             request.addHeader(headerLineSplit[0].trim(), headerLineSplit[1].trim());
             line = reader.readLine();
         }
-        line = reader.readLine();
+        //line = reader.readLine();
         while (line != null && !line.trim().equals("")) {
             request.setBody(request.getBody() + "\n" + line);
             line = reader.readLine();
