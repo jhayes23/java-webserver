@@ -29,38 +29,43 @@ public class HTTPReader extends Reader {
         String[] startLineSplit = line.split(" ");
         String method = startLineSplit[0].trim().toUpperCase();
         HTTPMethod methodEnum;
-        switch(method) {
+        switch (method) {
             case "GET":
-                methodEnum =  HTTPMethod.GET;
+                methodEnum = HTTPMethod.GET;
                 break;
             case "HEAD":
-                methodEnum =  HTTPMethod.HEAD;
+                methodEnum = HTTPMethod.HEAD;
                 break;
             case "POST":
-                methodEnum =  HTTPMethod.POST;
+                methodEnum = HTTPMethod.POST;
                 break;
             case "PUT":
-                methodEnum =  HTTPMethod.PUT;
+                methodEnum = HTTPMethod.PUT;
                 break;
             case "DELETE":
-                methodEnum =  HTTPMethod.DELETE;
+                methodEnum = HTTPMethod.DELETE;
                 break;
             default:
                 methodEnum = null;
         }
         request.setStartLine(new HTTPMessage.RequestStartLine(methodEnum, startLineSplit[1].trim(), startLineSplit[2].trim()));
         line = reader.readLine();
+        int contentLen = 0;
         while (!line.trim().equals("")) {
-            //System.out.println(line);
-            String[] headerLineSplit = line.split(":");
+            String[] headerLineSplit = line.split(": ");
             request.addHeader(headerLineSplit[0].trim(), headerLineSplit[1].trim());
+            if (headerLineSplit[0].equals("Content-Length")) {
+                contentLen = Integer.parseInt(headerLineSplit[1]);
+            }
             line = reader.readLine();
         }
-        //line = reader.readLine();
-        while (line != null && !line.trim().equals("")) {
-            request.setBody(request.getBody() + "\n" + line);
-            line = reader.readLine();
+        if(contentLen >0){
+            char[] buff = new char[contentLen];
+            reader.read(buff, 0, contentLen);
+            String body = String.valueOf(buff);
+            request.setBody(body);
         }
+
         return request;
     }
 }

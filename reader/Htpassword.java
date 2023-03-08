@@ -10,7 +10,6 @@ import java.security.MessageDigest;
 import java.io.IOException;
 public class Htpassword {
     private final HashMap<String, String> passwords;
-    private BufferedReader reader;
     private final String filename;
     public Htpassword( String filename ) throws IOException {
         System.out.println( "Password file: " + filename );
@@ -34,6 +33,9 @@ public class Htpassword {
         );
         // The string is the key:value pair username:password
         String[] tokens = credentials.split( ":" );
+        if(tokens.length != 2){
+            return false;
+        }
         return verifyPassword(tokens[0],tokens[1]);
     }
     private boolean verifyPassword( String username, String password ) {
@@ -61,7 +63,7 @@ public class Htpassword {
 
     private void load() throws IOException {
         try {
-            this.reader = new BufferedReader(new FileReader(filename));
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
             String line = reader.readLine();
             while (line != null) {
                 parseLine(line);

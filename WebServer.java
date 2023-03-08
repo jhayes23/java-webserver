@@ -17,7 +17,6 @@ public class WebServer {
         // the root of your project directory
 
         String confPath = "conf/httpd.conf";
-        String mimePath = "conf/httpd.mimetypes";
         ConfReader confReader = new ConfReader(confPath);
         try {
             MimeTypes mimeTypes = new MimeTypesReader().read();
@@ -31,15 +30,21 @@ public class WebServer {
                 RequestHandler handler = new RequestHandler(socket);
                 HTTPMessage request;
                 request = httpReader.read();
-                RequestProcessor processor = new RequestProcessor(config.getDocumentRoot(), config.getScriptAlias(), request, httpReader);
-                handler.write("HTTP/1.1 " + processor.processReq() + "\n");
-                handler.write("Date: " + dateTime.format(new Date()) + "\n");
-                handler.write("Server: Shi Hayes\n");
+                RequestProcessor processor = new RequestProcessor(config.getDocumentRoot(), config.getScriptAlias(), request);
+                handler.write("HTTP/1.1 " + processor.processReq() + "\r\n");
+                handler.write("Date: " + dateTime.format(new Date()) + "\r\n");
+                handler.write("Server: Shi, Hayes\r\n");
                 if (!processor.isScript()) {
-                    handler.write("Content-Type: " + mimeTypes.get(processor.getExtension()) + "\n");
-                    handler.write("Content-Length: " + processor.getResourceSize() + "\n");
-                    handler.write("\n");
-                    if (processor.hasResources()){handler.write(processor.getResource());}
+                    if(processor.isAuthRequired()){
+                        handler.write("WWW-Authenticate: "+ processor.getAuthType()+ " realm="+ processor.getAuthName()+"\r\n");
+                    }else{
+                        if(processor.hasResources()){
+                            handler.write("Content-Length: " + processor.getResourceSize() + "\r\n");
+                            handler.write("Content-Type: " + mimeTypes.get(processor.getExtension()) + "\r\n");
+                            handler.write("\r\n");
+                            handler.write(processor.getResource());
+                        }
+                    }
                 }
                 handler.flush();
                 socket.close();
