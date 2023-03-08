@@ -28,7 +28,8 @@ public class ConfReader extends Reader {
 //                    System.out.print("Document Root: ");
                     String[] splitLine = line.split("\\s+");
 //                    System.out.println(Arrays.toString(splitLine));
-                    config.setDocumentRoot(splitLine[1].trim());
+                    config.setDocumentRoot(splitLine[1].trim().
+                            replaceFirst("\"","").replaceFirst("\"","/"));
                 }
                 else if (line.startsWith("Listen")){
 //                    System.out.print("Listen: ");

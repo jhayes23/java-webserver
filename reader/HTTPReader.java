@@ -50,17 +50,22 @@ public class HTTPReader extends Reader {
         }
         request.setStartLine(new HTTPMessage.RequestStartLine(methodEnum, startLineSplit[1].trim(), startLineSplit[2].trim()));
         line = reader.readLine();
+        int contentLen = 0;
         while (!line.trim().equals("")) {
-            //System.out.println(line);
-            String[] headerLineSplit = line.split(":");
+            String[] headerLineSplit = line.split(": ");
             request.addHeader(headerLineSplit[0].trim(), headerLineSplit[1].trim());
+            if (headerLineSplit[0].equals("Content-Length")) {
+                contentLen = Integer.parseInt(headerLineSplit[1]);
+            }
             line = reader.readLine();
         }
-        //line = reader.readLine();
-        while (line != null && !line.trim().equals("")) {
-            request.setBody(request.getBody() + "\n" + line);
-            line = reader.readLine();
+        if(contentLen >0){
+            char[] buff = new char[contentLen];
+            reader.read(buff, 0, contentLen);
+            String body = String.valueOf(buff);
+            request.setBody(body);
         }
+
         return request;
     }
 }

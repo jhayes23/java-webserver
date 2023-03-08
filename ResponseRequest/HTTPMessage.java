@@ -36,7 +36,7 @@ public class HTTPMessage {
             this.method = method;
             this.target = target;
         }
-
+        public String getMethod(){return method.toString();}
         @Override
         public String toString() {
             return method + " " + target + " " + version;

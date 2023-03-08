@@ -3,13 +3,20 @@ import ResponseRequest.RequestHandler;
 import reader.ConfData;
 import reader.ConfReader;
 import reader.HTTPReader;
+import ResponseRequest.HTTPMessage;
+import ResponseRequest.RequestHandler;
+import reader.*;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class WebServer {
+    private static final SimpleDateFormat dateTime = new SimpleDateFormat("dd/MM/yyyy:HH:mm:ss Z");
+
     public static void main(String[] args) {
         // This file will be compiled by script and must be at
         // the root of your project directory
@@ -17,6 +24,7 @@ public class WebServer {
         String confPath = "conf/httpd.conf";
         ConfReader confReader = new ConfReader(confPath);
         try {
+            MimeTypes mimeTypes = new MimeTypesReader().read();
             ConfData config = confReader.read();
             ServerSocket server = new ServerSocket(config.getListen());
             System.out.println("Server started...");
@@ -26,28 +34,30 @@ public class WebServer {
                 RequestHandler handler = new RequestHandler(socket);
                 HTTPMessage request;
 
-//                if (httpReader.read() == null) { //works around first socket read null
-//                    socket.close();
-//                } else {
+            while ((socket = server.accept()) != null) {
+                HTTPReader httpReader = new HTTPReader(socket);
+                RequestHandler handler = new RequestHandler(socket);
+                HTTPMessage request;
                 request = httpReader.read();
-
-                System.out.println(">>>>>Print Request\n" + request + "\n<<<<<End Request");
-                if (request != null) {
-                    handler.write(request.toString());
+                RequestProcessor processor = new RequestProcessor(config.getDocumentRoot(), config.getScriptAlias(), request);
+                handler.write("HTTP/1.1 " + processor.processReq() + "\r\n");
+                handler.write("Date: " + dateTime.format(new Date()) + "\r\n");
+                handler.write("Server: Shi, Hayes\r\n");
+                if (!processor.isScript()) {
+                    if(processor.isAuthRequired()){
+                        handler.write("WWW-Authenticate: "+ processor.getAuthType()+ " realm="+ processor.getAuthName()+"\r\n");
+                    }else{
+                        if(processor.hasResources()){
+                            handler.write("Content-Length: " + processor.getResourceSize() + "\r\n");
+                            handler.write("Content-Type: " + mimeTypes.get(processor.getExtension()) + "\r\n");
+                            handler.write("\r\n");
+                            handler.write(processor.getResource());
+                        }
+                    }
                 }
-//                }
-//                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                String line = in.readLine();
-//                //System.out.println(line);
-//                if (line != null) {
-//                    System.out.println(Arrays.toString(line.split(" / ")));
-//                }
-//                line = in.readLine();
-//                while (line != null) {
-//                    System.out.println(line);
-//                    line = in.readLine();
-//                }
+                handler.flush();
                 socket.close();
+
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
