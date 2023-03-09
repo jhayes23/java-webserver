@@ -121,6 +121,7 @@ public class Log{
                 String.valueOf(this.bytes)
                 );
         System.out.println(output);
+        writer.println(output);
     }
 
     public void out(String response, String date){
