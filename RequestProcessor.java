@@ -32,7 +32,7 @@ public class RequestProcessor {
         String[] split = request.getStartLine().toString().split("\\s+");
         this.method = split[0];
         this.target = split[1];
-        this.body = request.getBody();
+        //this.body = request.getBody();
 
 
     }

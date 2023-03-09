@@ -18,6 +18,7 @@ public class ConfReader extends Reader {
     public ConfData read() throws IOException {
         String line = reader.readLine();
         ConfData config = new ConfData();
+        config.setListen(8080);
 
         while (line != null) {
             if (line.trim().length() != 0) {
@@ -38,16 +39,20 @@ public class ConfReader extends Reader {
                     config.setListen(Integer.parseInt(splitLine[1].trim()));
                 }
                 else if (line.startsWith("LogFile")){
-//                    System.out.print("Log File: ");
+//                    System.out.print("Logging.Log File: ");
                     String[] splitLine = line.split("\\s+");
 //                    System.out.println(Arrays.toString(splitLine));
                     config.setLogFile(splitLine[1].trim());
                 }
-                else if (line.startsWith("ScriptAlias") || line.startsWith("Alias")) {
+                else if (line.startsWith("ScriptAlias")) {
 //                    System.out.print("Script Alias: ");
                     String[] splitLine = line.split("\\s+");
 //                    System.out.println(Arrays.toString(splitLine));
                     config.addScriptAlias(splitLine[1].trim(), splitLine[2].trim());
+                }
+                else if (line.startsWith("Alias")) {
+                    String[] splitLine = line.split("\\s+");
+                    config.addAlias(splitLine[1].trim(), splitLine[2].trim());
                 }
                 else if (line.startsWith("DirectoryIndex")) {
 //                    System.out.print("Directory Index: ");

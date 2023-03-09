@@ -9,7 +9,10 @@ public class MimeTypes {
         mimeTypes = new HashMap<>();
     }
     public String get(String extension){
-        return mimeTypes.get(extension);
+        if (mimeTypes.containsKey(extension)) {
+            return mimeTypes.get(extension);
+        }
+        return "text/text";
     }
     public void add(String extension, String type){
         mimeTypes.put(extension,type);

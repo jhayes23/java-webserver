@@ -1,5 +1,5 @@
-import ResponseRequest.HTTPMessage;
-import ResponseRequest.RequestHandler;
+import Logging.Log;
+import ResponseRequest.*;
 import reader.ConfData;
 import reader.ConfReader;
 import reader.HTTPReader;
@@ -21,6 +21,19 @@ public class WebServer {
         // This file will be compiled by script and must be at
         // the root of your project directory
 
+        Log log = new Log("log/log.txt");
+        log
+            .setIp("127.0.0.1")
+            .setAuthuser("frank")
+            .setRequest(new HTTPMessage.RequestStartLine(
+                    HTTPMethod.GET,
+            "/apache_pb.gif",
+            "HTTP/1.0"))
+            .setStatus(ResponseCode.OK)
+            .setBytes(2326)
+            .out();
+
+
         String confPath = "conf/httpd.conf";
         ConfReader confReader = new ConfReader(confPath);
         try {
@@ -29,32 +42,28 @@ public class WebServer {
             ServerSocket server = new ServerSocket(config.getListen());
             System.out.println("Server started...");
             Socket socket;
-            while ((socket = server.accept()) != null) {
-                HTTPReader httpReader = new HTTPReader(socket);
-                RequestHandler handler = new RequestHandler(socket);
-                HTTPMessage request;
 
             while ((socket = server.accept()) != null) {
                 HTTPReader httpReader = new HTTPReader(socket);
                 RequestHandler handler = new RequestHandler(socket);
                 HTTPMessage request;
                 request = httpReader.read();
-                RequestProcessor processor = new RequestProcessor(config.getDocumentRoot(), config.getScriptAlias(), request);
-                handler.write("HTTP/1.1 " + processor.processReq() + "\r\n");
-                handler.write("Date: " + dateTime.format(new Date()) + "\r\n");
-                handler.write("Server: Shi, Hayes\r\n");
-                if (!processor.isScript()) {
-                    if(processor.isAuthRequired()){
-                        handler.write("WWW-Authenticate: "+ processor.getAuthType()+ " realm="+ processor.getAuthName()+"\r\n");
-                    }else{
-                        if(processor.hasResources()){
-                            handler.write("Content-Length: " + processor.getResourceSize() + "\r\n");
-                            handler.write("Content-Type: " + mimeTypes.get(processor.getExtension()) + "\r\n");
-                            handler.write("\r\n");
-                            handler.write(processor.getResource());
-                        }
-                    }
-                }
+//                RequestProcessor processor = new RequestProcessor(config.getDocumentRoot(), config.getScriptAlias(), request);
+//                handler.write("HTTP/1.1 " + processor.processReq() + "\r\n");
+//                handler.write("Date: " + dateTime.format(new Date()) + "\r\n");
+//                handler.write("Server: Shi, Hayes\r\n");
+//                if (!processor.isScript()) {
+//                    if(processor.isAuthRequired()){
+//                        handler.write("WWW-Authenticate: "+ processor.getAuthType()+ " realm="+ processor.getAuthName()+"\r\n");
+//                    }else{
+//                        if(processor.hasResources()){
+//                            handler.write("Content-Length: " + processor.getResourceSize() + "\r\n");
+//                            handler.write("Content-Type: " + mimeTypes.get(processor.getExtension()) + "\r\n");
+//                            handler.write("\r\n");
+//                            handler.write(processor.getResource());
+//                        }
+//                    }
+//                }
                 handler.flush();
                 socket.close();
 

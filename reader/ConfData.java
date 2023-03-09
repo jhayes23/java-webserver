@@ -11,6 +11,8 @@ public class ConfData {
     private String documentRoot;
     private String logFile;
     private HashMap<String, String> scriptAlias;
+
+    private HashMap<String, String> alias;
     private String directoryIndex;
 
     public ConfData() {
@@ -49,6 +51,17 @@ public class ConfData {
             scriptAlias = new HashMap<String, String>();
         }
         scriptAlias.put(symbPath, absPath);
+    }
+
+    public HashMap<String, String> getAlias() {
+        return alias;
+    }
+
+    public void addAlias(String symbPath, String absPath) {
+        if (alias == null) {
+            alias = new HashMap<String, String>();
+        }
+        alias.put(symbPath, absPath);
     }
 
     public String getDirectoryIndex() {
