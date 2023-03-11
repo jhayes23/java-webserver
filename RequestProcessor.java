@@ -6,14 +6,17 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RequestProcessor {
     private final String docRoot;
-    private String method, target, body;
+    private String method, target, body, queryString;
     private final HashMap<String, String> alias;
-    private final HashMap<String,String> headers;
+    private final HashMap<String, String> headers;
     private long fileSize;
     private Path filePath;
     private boolean isScript = false;
@@ -43,10 +46,15 @@ public class RequestProcessor {
             builder.append("index.html");
         } else {
             pathReq = pathReq.replaceFirst("/", "");
+            if (pathReq.contains("?")) {
+                int queryStart = pathReq.indexOf("?");
+                queryString = pathReq.substring(queryStart + 1);
+                pathReq = pathReq.substring(0, queryStart);
+            }
             builder.append(aliasCheck(pathReq));
         }
         filePath = Paths.get(builder.toString());
-        if(Files.isDirectory(filePath)){
+        if (Files.isDirectory(filePath)) {
             filePath = Path.of(filePath + "/index.html");
         }
         parentDirectory = filePath.toAbsolutePath().getParent();
@@ -56,17 +64,17 @@ public class RequestProcessor {
 
     }
 
-    public ResponseCode processReq() throws IOException {
+    public ResponseCode processReq() throws IOException, InterruptedException {
         System.out.println("Method: " + method + "  Request: " + target);
         this.resolvePath(target);
-            if(Files.exists(Path.of(parentDirectory + "/.htaccess"))){
+        if (Files.exists(Path.of(parentDirectory + "/.htaccess"))) {
             authRequired = true;
-            loadHtAccess(parentDirectory+ "/.htaccess");
-            if(!headers.containsKey("Authorization")){
+            loadHtAccess(parentDirectory + "/.htaccess");
+            if (!headers.containsKey("Authorization")) {
                 return ResponseCode.UNAUTHORIZED;
             }
             htpassword = new Htpassword(authFile);
-            if(!authenticated()){
+            if (!authenticated()) {
                 return ResponseCode.FORBIDDEN;
             }
         }
@@ -95,10 +103,15 @@ public class RequestProcessor {
                         this.loadResource();
                         return ResponseCode.OK;
                     case "GET":
-                        sendFile = true;
-                        this.loadResource();
-                        System.out.println("DIFFERENT");
-                        return ResponseCode.OK;
+                        if(!wasModifiedSince()) {
+                            return ResponseCode.NOT_MODIFIED;
+                        }
+                        else{
+                            sendFile = true;
+                            this.loadResource();
+                            return ResponseCode.OK;
+                        }
+
                     case "HEAD":
                         return ResponseCode.OK;
                     default:
@@ -115,16 +128,17 @@ public class RequestProcessor {
             throw new RuntimeException(e);
         }
     }
-    public boolean authenticated(){
-            if(headers.containsKey("Authorization")){
-                String[] split = headers.get("Authorization").split("\\s+",2);
-                if(split[0].equals("Basic")){
-                    if(htpassword.isAuthorized(split[1])){
-                        authRequired = false;
-                        return true;
-                    }
+
+    public boolean authenticated() {
+        if (headers.containsKey("Authorization")) {
+            String[] split = headers.get("Authorization").split("\\s+", 2);
+            if (split[0].equals("Basic")) {
+                if (htpassword.isAuthorized(split[1])) {
+                    authRequired = false;
+                    return true;
                 }
             }
+        }
 
         return false;
     }
@@ -171,27 +185,41 @@ public class RequestProcessor {
     }
 
     private boolean executeScript() {
-        ProcessBuilder jBuild = new ProcessBuilder(String.valueOf(filePath));
-        Map<String, String> environment = jBuild.environment();
-        environment.put("SERVER_PROTOCOL", "HTTP/1.1");
-//        for (Map.Entry<String, String> entry: environment.entrySet()) {
-//            System.out.println(entry + "  Key:"+entry.getValue());
-//        }
+
+
+
         try {
+            ProcessBuilder jBuild = new ProcessBuilder(String.valueOf(filePath));
+            Map<String, String> environment = jBuild.environment();
+            environment.put("SERVER_PROTOCOL", "HTTP/1.1");
+            if (queryString != null) {
+                environment.put("QUERY_STRING", queryString);
+            }
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                environment.put(
+                        "HTTP_" + header.getKey().toUpperCase()
+                                .replaceAll("-", "_"), headers.get(header.getKey()));
+            }
             Process process = jBuild.start();
-            BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(process.getOutputStream()));
-            writer.write("42");
+            DataOutputStream writer = new DataOutputStream(process.getOutputStream());
+            if(body!=null){
+                writer.write(body.getBytes());
+            }
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            String response = "200 OK HTTP/1.1\r\nServer: Roberts, Roberts\r\nDate: tuhday\r\n";
-
-
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line).append("\r\n");
+            }
+            response.append("\r\n");
+            sendFile = true;
+            bytes  = response.toString().getBytes();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("CGI ERROR");
+            return false;
         }
-        return false;
+        return true;
     }
 
     private void loadHtAccess(String path) throws RuntimeException {
@@ -200,21 +228,50 @@ public class RequestProcessor {
             reader = new BufferedReader(new FileReader(path));
             String line = reader.readLine();
             while (line != null) {
-                String[] split = line.trim().split("\\s+",2);
+                String[] split = line.trim().split("\\s+", 2);
                 switch (split[0]) {
                     case "AuthUserFile" -> authFile = split[1].
-                            replaceFirst("\"","").replaceFirst("\"","/");
+                            replaceFirst("\"", "").replaceFirst("\"", "/");
                     case "AuthType" -> authType = split[1];
                     case "AuthName" -> authName = split[1];
                 }
                 line = reader.readLine();
             }
 
-    } catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-    public String getAuthType(){return authType;}
-    public String getAuthName(){return authName;}
-    public boolean isAuthRequired(){return authRequired;}
+
+    public String getAuthType() {
+        return authType;
+    }
+
+    public String getAuthName() {
+        return authName;
+    }
+
+    public boolean isAuthRequired() {
+        return authRequired;
+    }
+
+    private boolean wasModifiedSince() {
+        long serverModDate;
+        long clientModDateTime;
+        if (headers.containsKey("If-Modified-Since")) {
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
+            String respDate = headers.get("If-Modified-Since");
+            try {
+                Date dateParse = sdf.parse(respDate);
+
+                clientModDateTime = dateParse.getTime();
+                serverModDate = Files.getLastModifiedTime(filePath).toMillis();
+                return serverModDate >= clientModDateTime;
+            } catch (ParseException | IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        return true;
+    }
 }
