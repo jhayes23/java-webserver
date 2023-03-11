@@ -45,12 +45,14 @@ public class WebServer {
                             handler.write(processor.getResource());
                         }
                     }
+                }else{
+                    handler.write(processor.getResource());
                 }
                 handler.flush();
                 socket.close();
 
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
