@@ -21,7 +21,7 @@ public class HTTPReader extends Reader {
         }
     }
 
-/*    @Override
+    @Override
     public HTTPMessage read() throws IOException {
         String line = reader.readLine();
         if (line == null) {
@@ -32,21 +32,21 @@ public class HTTPReader extends Reader {
         String[] startLineSplit = line.split(" ");
         String method = startLineSplit[0].trim().toUpperCase();
         HTTPMethod methodEnum;
-        switch(method) {
+        switch (method) {
             case "GET":
-                methodEnum =  HTTPMethod.GET;
+                methodEnum = HTTPMethod.GET;
                 break;
             case "HEAD":
-                methodEnum =  HTTPMethod.HEAD;
+                methodEnum = HTTPMethod.HEAD;
                 break;
             case "POST":
-                methodEnum =  HTTPMethod.POST;
+                methodEnum = HTTPMethod.POST;
                 break;
             case "PUT":
-                methodEnum =  HTTPMethod.PUT;
+                methodEnum = HTTPMethod.PUT;
                 break;
             case "DELETE":
-                methodEnum =  HTTPMethod.DELETE;
+                methodEnum = HTTPMethod.DELETE;
                 break;
             default:
                 methodEnum = null;
@@ -62,43 +62,17 @@ public class HTTPReader extends Reader {
             }
             line = reader.readLine();
         }
-
-//        ByteArrayOutputStream bodyStream = new ByteArrayOutputStream();
-//        byte[] buffer = new byte[4096];
-//        int bytesRead = 0;
-//        while (bytesRead < contentLen) {
-//            int numRead = reader.read();
-//        }
-//        while ((bytesRead = reader.read()) != -1) {
-//            bodyStream.write(buffer, 0, bytesRead);
-//        }
-//        request.setBody(bodyStream.toByteArray());
-
-//        if(contentLen >0){
-////            char[] buff = new char[contentLen];
-////            reader.read(buff, 0, contentLen);
-////            String body = String.valueOf(buff);
-//            //request.setBody(body);
-//            char[] buffer = new char[1024];
-//            int bytesRead = 0;
-//            StringBuilder bodyBuilder = new StringBuilder();
-//            while (bytesRead < contentLen) {
-//                int numToRead = Math.min(buffer.length, contentLen - bytesRead);
-//                int numRead = reader.read(buffer, 0, numToRead);
-//                if (numRead == -1) {
-//                    // End of stream reached prematurely
-//                    break;
-//                }
-//                bytesRead += numRead;
-//                bodyBuilder.append(buffer, 0, numRead);
-//            }
-//            request.setBody(bodyBuilder.toString());
-//        }
+        if(contentLen >0){
+            char[] buff = new char[contentLen];
+            reader.read(buff, 0, contentLen);
+            String body = String.valueOf(buff);
+            request.setBody(body);
+        }
 
         return request;
     }
- */
 
+    /*
     public HTTPMessage read() throws IOException {
         StringBuilder line = new StringBuilder();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -124,4 +98,5 @@ public class HTTPReader extends Reader {
         HTTPMessage request = new HTTPMessage();
         return request;
     }
+    */
 }

@@ -45,13 +45,14 @@ public class HTTPMessage {
 
     protected StartLine startLine;
     protected HashMap<String, String> headers;
-    protected byte[] body;
+    //protected byte[] body;
+    protected String body;
 
     public HTTPMessage() {
         this.headers = new HashMap<>();
     }
 
-    public HTTPMessage(StartLine startLine, HashMap<String, String> headers, byte[] body) {
+    public HTTPMessage(StartLine startLine, HashMap<String, String> headers, String body) {
         this.startLine = startLine;
         this.headers = headers;
         this.body = body;
@@ -80,11 +81,11 @@ public class HTTPMessage {
         return this;
     }
 
-    public byte[] getBody() {
+    public String getBody() {
         return body;
     }
 
-    public HTTPMessage setBody(byte[] body) {
+    public HTTPMessage setBody(String body) {
         this.body = body;
         return this;
     }

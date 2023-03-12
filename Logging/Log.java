@@ -20,11 +20,11 @@ public class Log{
 
     protected ZonedDateTime date;
 
-    protected HTTPMessage.RequestStartLine request;
+    protected HTTPMessage.StartLine request;
 
     protected ResponseCode status;
 
-    protected int bytes;
+    protected long bytes;
 
     public String getIp() {
         return ip;
@@ -62,11 +62,11 @@ public class Log{
         return this;
     }
 
-    public HTTPMessage.RequestStartLine getRequest() {
+    public HTTPMessage.StartLine getRequest() {
         return request;
     }
 
-    public Log setRequest(HTTPMessage.RequestStartLine request) {
+    public Log setRequest(HTTPMessage.StartLine request) {
         this.request = request;
         return this;
     }
@@ -80,11 +80,11 @@ public class Log{
         return this;
     }
 
-    public int getBytes() {
+    public long getBytes() {
         return bytes;
     }
 
-    public Log setBytes(int bytes) {
+    public Log setBytes(long bytes) {
         this.bytes = bytes;
         return this;
     }

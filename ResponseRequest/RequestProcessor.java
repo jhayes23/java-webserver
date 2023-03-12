@@ -1,3 +1,5 @@
+package ResponseRequest;
+
 import ResponseRequest.HTTPMessage;
 import ResponseRequest.ResponseCode;
 import reader.Htpassword;
@@ -12,8 +14,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestProcessor {
+public class RequestProcessor{
     private final String docRoot;
+    private final String dirIndex;
     private String method, target, body, queryString;
     private final HashMap<String, String> alias;
     private final HashMap<String, String> headers;
@@ -28,22 +31,21 @@ public class RequestProcessor {
     private Path parentDirectory;
     private String authFile, authType, authName;
 
-    RequestProcessor(String documentRoot, HashMap<String, String> alias, HTTPMessage request) throws IOException {
+    RequestProcessor(String documentRoot, String dirIndex, HashMap<String, String> alias, HTTPMessage request) throws IOException {
         this.docRoot = documentRoot;
+        this.dirIndex = dirIndex;
         this.alias = alias;
         this.headers = request.getHeaders();
         String[] split = request.getStartLine().toString().split("\\s+");
         this.method = split[0];
         this.target = split[1];
-        //this.body = request.getBody();
-
-
+        this.body = request.getBody();
     }
 
     public void resolvePath(String pathReq) {
         StringBuilder builder = new StringBuilder(docRoot);
         if (pathReq == null || pathReq.equals("/")) {
-            builder.append("index.html");
+            builder.append(this.dirIndex);
         } else {
             pathReq = pathReq.replaceFirst("/", "");
             if (pathReq.contains("?")) {
@@ -167,8 +169,8 @@ public class RequestProcessor {
         return isScript && aliased;
     }
 
-    public String getResourceSize() {
-        return String.valueOf(fileSize);
+    public long getResourceSize() {
+        return fileSize;
     }
 
     public byte[] getResource() {
