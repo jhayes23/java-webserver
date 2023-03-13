@@ -64,7 +64,7 @@ To test classes individually, we created main methods and used sample data to te
 
 | Completed | Points   | Description                                                             | Deductions                                                                                                                                              |
 |-----------|----------|-------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| []       |_5 points_| Code is clean, well formatted (appropriate white space and indentation) | (-2) Minor whitespace issues (missing whitespace between logical sections, excessive whitespace, functions, occasional misalignment, run-together code) | 
+| [⎷]       |_5 points_| Code is clean, well formatted (appropriate white space and indentation) | (-2) Minor whitespace issues (missing whitespace between logical sections, excessive whitespace, functions, occasional misalignment, run-together code) | 
 (-5) Major whitespace issues (inconsistent formatting, major misalignment, little use of whitespace, debug statements, inlined control flow)  
 (-2) Tabs  
 (-1) Failed to use explicit blocks  
@@ -83,8 +83,8 @@ To test classes individually, we created main methods and used sample data to te
 | Completed | Points      | Description                 | Deductions                                                                                                                               |
 | --------- | ----------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | [⎷]        | _3 points_  | Full names of team members  | (-1.5) Missing team member                                                                                                               |
-| []        | _2 points_  | Rubric completed            | (-varies) Not clear what was marked off as completed?                                                                                    |
-| []        | _10 points_ | Description of architecture | (-2) Difficult to read - I would suggest splitting into multiple, related groups of classes to make it easier for a reader to understand | 
+| [⎷]        | _2 points_  | Rubric completed            | (-varies) Not clear what was marked off as completed?                                                                                    |
+| [⎷]        | _10 points_ | Description of architecture | (-2) Difficult to read - I would suggest splitting into multiple, related groups of classes to make it easier for a reader to understand | 
 (-2) Missing significant details (fields, methods, etc.)  
 (-2) Description not clear |
 | [] | _10 points_ | Challenges | (-varies) Not enough detail, no critical thinking |
@@ -95,7 +95,7 @@ To test classes individually, we created main methods and used sample data to te
 | Completed | Points     | Description                                          | Deductions                  |
 | --------- | ---------- | ---------------------------------------------------- | --------------------------- |
 | [⎷]        | _3 points_ | Starts up and listens on correct port                | (-varies)                   |
-| []        | _2 points_ | Logs in the common log format to stdout and log file | (-1) Does not log to stdout |
+| [⎷]        | _2 points_ | Logs in the common log format to stdout and log file | (-1) Does not log to stdout |
 
 (-1) Does not log in coming log format  
 (-1) debug output |
