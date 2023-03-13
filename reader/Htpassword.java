@@ -12,7 +12,7 @@ public class Htpassword {
     private final HashMap<String, String> passwords;
     private final String filename;
     public Htpassword( String filename ) throws IOException {
-        System.out.println( "Password file: " + filename );
+        //System.out.println( "Password file: " + filename );
         this.filename = filename;
         this.passwords = new HashMap<>();
         this.load();
@@ -70,7 +70,7 @@ public class Htpassword {
                 line = reader.readLine();
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Error loading Htpassword");
+            //System.out.println("Error loading Htpassword");
             throw new RuntimeException(e);
         }
     }

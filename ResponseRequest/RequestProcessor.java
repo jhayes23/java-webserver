@@ -8,6 +8,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,12 +25,16 @@ public class RequestProcessor{
     private Path filePath;
     private boolean isScript = false;
     private boolean sendFile = false;
+
+    private boolean returnLastModified = false;
     private boolean aliased = false;
     private boolean authRequired = false;
     private Htpassword htpassword;
     private byte[] bytes;
     private Path parentDirectory;
     private String authFile, authType, authName;
+
+    private Date lastModified;
 
     RequestProcessor(String documentRoot, String dirIndex, HashMap<String, String> alias, HTTPMessage request) throws IOException {
         this.docRoot = documentRoot;
@@ -66,8 +71,8 @@ public class RequestProcessor{
 
     }
 
-    public ResponseCode processReq() throws IOException, InterruptedException {
-        System.out.println("Method: " + method + "  Request: " + target);
+    public ResponseCode processReq(){
+        //System.out.println("Method: " + method + "  Request: " + target);
         this.resolvePath(target);
         if (Files.exists(Path.of(parentDirectory + "/.htaccess"))) {
             authRequired = true;
@@ -75,19 +80,36 @@ public class RequestProcessor{
             if (!headers.containsKey("Authorization")) {
                 return ResponseCode.UNAUTHORIZED;
             }
-            htpassword = new Htpassword(authFile);
+            try {
+                htpassword = new Htpassword(authFile);
+            } catch (IOException e) {
+                return ResponseCode.INTERNAL_SERVER_ERROR;
+            }
             if (!authenticated()) {
                 return ResponseCode.FORBIDDEN;
             }
         }
 
         if (method.equals("PUT")) {
-            Files.createDirectories(parentDirectory);
-            Files.createFile(filePath);
-            if (body != null) {
-                Files.write(filePath, body.getBytes());
+            try {
+                Files.createDirectories(parentDirectory);
+                if (!Files.exists(filePath)) {
+                    Files.createFile(filePath);
+                    if (body != null) {
+                        Files.write(filePath, body.getBytes());
+                    }
+                    return ResponseCode.CREATED;
+                } else {
+                    if (body != null) {
+                        Files.write(filePath, body.getBytes());
+                        return ResponseCode.OK;
+                    } else {
+                        return ResponseCode.NO_CONTENT;
+                    }
+                }
+            } catch (IOException e) {
+                return ResponseCode.INTERNAL_SERVER_ERROR;
             }
-            return ResponseCode.CREATED;
         } else {
             if (!Files.exists(filePath)) {
                 return ResponseCode.NOT_FOUND;
@@ -98,23 +120,43 @@ public class RequestProcessor{
             } else {
                 switch (method) {
                     case "DELETE":
-                        Files.deleteIfExists(filePath);
+                        try {
+                            Files.deleteIfExists(filePath);
+                        } catch (IOException e) {
+                            return ResponseCode.INTERNAL_SERVER_ERROR;
+                        }
                         return ResponseCode.NO_CONTENT;
                     case "POST":
+                        try {
+                            if (!Files.exists(filePath)) {
+                                Files.createFile(filePath);
+                            }
+                            Files.write(filePath, body.getBytes(), StandardOpenOption.APPEND);
+                        } catch (IOException e) {
+                            return ResponseCode.INTERNAL_SERVER_ERROR;
+                        }
+                        this.setResource(body.getBytes());
                         sendFile = true;
-                        this.loadResource();
+                        //this.loadResource();
                         return ResponseCode.OK;
                     case "GET":
-                        if(!wasModifiedSince()) {
-                            return ResponseCode.NOT_MODIFIED;
-                        }
-                        else{
-                            sendFile = true;
-                            this.loadResource();
-                            return ResponseCode.OK;
+                        try {
+                            if(!wasModifiedSince()) {
+                                return ResponseCode.NOT_MODIFIED;
+                            }
+                            else{
+                                sendFile = true;
+                                this.loadResource();
+                                return ResponseCode.OK;
+                            }
+                        } catch (ParseException | IOException e) {
+                            return ResponseCode.INTERNAL_SERVER_ERROR;
                         }
 
                     case "HEAD":
+                        sendFile = true;
+                        returnLastModified = true;
+                        this.setLastModified();
                         return ResponseCode.OK;
                     default:
                         return ResponseCode.INTERNAL_SERVER_ERROR;
@@ -129,6 +171,28 @@ public class RequestProcessor{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setLastModified() {
+        try {
+            this.lastModified = new Date(Files.getLastModifiedTime(filePath).toMillis());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getLastModified() {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
+        return sdf.format(this.lastModified);
+    }
+
+    public boolean isReturnLastModified() {
+        return returnLastModified;
+    }
+
+    public RequestProcessor setReturnLastModified(boolean returnLastModified) {
+        this.returnLastModified = returnLastModified;
+        return this;
     }
 
     public boolean authenticated() {
@@ -177,6 +241,10 @@ public class RequestProcessor{
         return bytes;
     }
 
+    public void setResource(byte[] src) {
+        this.bytes = src;
+    }
+
     public String getExtension() {
         int last = filePath.toString().lastIndexOf('.') + 1;
         return filePath.toString().substring(last);
@@ -218,7 +286,7 @@ public class RequestProcessor{
             sendFile = true;
             bytes  = response.toString().getBytes();
         } catch (IOException e) {
-            System.out.println("CGI ERROR");
+            //System.out.println("CGI ERROR");
             return false;
         }
         return true;
@@ -257,21 +325,17 @@ public class RequestProcessor{
         return authRequired;
     }
 
-    private boolean wasModifiedSince() {
+    private boolean wasModifiedSince() throws ParseException, IOException{
         long serverModDate;
         long clientModDateTime;
         if (headers.containsKey("If-Modified-Since")) {
             SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
             String respDate = headers.get("If-Modified-Since");
-            try {
-                Date dateParse = sdf.parse(respDate);
+            Date dateParse = sdf.parse(respDate);
 
-                clientModDateTime = dateParse.getTime();
-                serverModDate = Files.getLastModifiedTime(filePath).toMillis();
-                return serverModDate >= clientModDateTime;
-            } catch (ParseException | IOException e) {
-                throw new RuntimeException(e);
-            }
+            clientModDateTime = dateParse.getTime();
+            serverModDate = Files.getLastModifiedTime(filePath).toMillis();
+            return serverModDate >= clientModDateTime;
 
         }
         return true;

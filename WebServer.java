@@ -38,13 +38,13 @@ public class WebServer {
 //                    .setStatus(ResponseCode.OK)
 //                    .setBytes(2326)
 //                    .out();
-            System.out.println("Server started...");
+            //System.out.println("Server started...");
             Socket socket;
 
             while ((socket = server.accept()) != null) {
                 Thread thread = new Thread(new RequestHandler(socket, config, mimeTypes));
                 thread.start();
-                System.out.println("Thread " + thread.getId());
+                //System.out.println("Thread " + thread.getId());
 //                HTTPReader httpReader = new HTTPReader(socket);
 //                ResponseWriter handler = new ResponseWriter(socket);
 //                HTTPMessage request;

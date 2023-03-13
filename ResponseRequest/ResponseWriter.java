@@ -10,14 +10,14 @@ public class ResponseWriter {
         try {
             dataout = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
-            System.out.println("Error initializing HTTP output.");
+            //System.out.println("Error initializing HTTP output.");
             throw new RuntimeException(e);
         }
     }
 
     public void write(String input) throws IOException {
         dataout.writeBytes(input);
-        System.out.print(input);
+        //System.out.print(input);
     }
     public void write(byte[] input) throws IOException {
         dataout.write(input);

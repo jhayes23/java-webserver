@@ -126,13 +126,13 @@ public class Log{
 
     public void out(String response, String date){
         String output = String.format("[TODO: IP ADDRESS] - - [%s] %s", date,response);
-        System.out.println(output);
+        //System.out.println(output);
         writer.println(output);
     }
 
     public void out(String response,String date, String userId){
         String output = String.format("[TODO: IP ADDRESS] - %s [%s] %s",userId,date,response);
-        System.out.println(output);
+        //System.out.println(output);
         writer.println(output);
     }
 

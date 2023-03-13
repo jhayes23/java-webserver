@@ -32,36 +32,50 @@ public class RequestHandler implements Runnable{
             ResponseWriter handler = new ResponseWriter(socket);
             HTTPMessage request;
             request = httpReader.read();
-            RequestProcessor processor = new RequestProcessor(config.getDocumentRoot(), config.getDirectoryIndex(), config.getScriptAlias(), request);
-            ResponseCode reqResult = processor.processReq();
-
-            handler.write("HTTP/1.1 " + reqResult + "\r\n");
-            handler.write("Date: " + dateTime.format(new Date()) + "\r\n");
-            handler.write("Server: Shi, Hayes\r\n");
-            if (!processor.isScript()) {
-                if (processor.isAuthRequired()) {
-                    handler.write("WWW-Authenticate: " + processor.getAuthType() + " realm=" + processor.getAuthName() + "\r\n");
-                } else {
-                    if (processor.hasResources()) {
-                        handler.write("Content-Length: " + String.valueOf(processor.getResourceSize()) + "\r\n");
-                        handler.write("Content-Type: " + mimeTypes.get(processor.getExtension()) + "\r\n");
-                        handler.write("\r\n");
-                        handler.write(processor.getResource());
-                    }
-                }
+            if (request == null) {
+                handler.write("HTTP/1.1 " + ResponseCode.BAD_REQUEST + "\r\n");
+                Log log = new Log(config.getLogFile());
+                log
+//                .setIp()
+                .setStatus(ResponseCode.BAD_REQUEST)
+                .out();
             } else {
-                handler.write(processor.getResource());
+                RequestProcessor processor = new RequestProcessor(config.getDocumentRoot(), config.getDirectoryIndex(), config.getScriptAlias(), request);
+                ResponseCode reqResult = processor.processReq();
+
+                handler.write("HTTP/1.1 " + reqResult + "\r\n");
+                handler.write("Date: " + dateTime.format(new Date()) + "\r\n");
+                handler.write("Server: Shi, Hayes\r\n");
+                if (!processor.isScript()) {
+                    if (processor.isAuthRequired()) {
+                        handler.write("WWW-Authenticate: " + processor.getAuthType() + " realm=" + processor.getAuthName() + "\r\n");
+                    } else {
+                        if (processor.hasResources()) {
+                            handler.write("Content-Length: " + String.valueOf(processor.getResourceSize()) + "\r\n");
+                            handler.write("Content-Type: " + mimeTypes.get(processor.getExtension()) + "\r\n");
+                        }
+                        if (processor.isReturnLastModified()) {
+                            handler.write("Last-Modified: " + processor.getLastModified().toString() + "\r\n");
+                        }
+                        handler.write("\r\n");
+                        if (processor.getResource() != null && processor.getResource().length != 0) {
+                            handler.write(processor.getResource());
+                        }
+                    }
+                } else {
+                    handler.write(processor.getResource());
+                }
+                Log log = new Log(config.getLogFile());
+                log
+                .setAuthuser(processor.getAuthName())
+                .setRequest(request.getStartLine())
+                .setStatus(reqResult)
+                .setBytes(processor.getResourceSize())
+                .out();
             }
-            Log log = new Log(config.getLogFile());
-            log
-                    .setAuthuser(processor.getAuthName())
-                    .setRequest(request.getStartLine())
-                    .setStatus(reqResult)
-                    .setBytes(processor.getResourceSize())
-                    .out();
             handler.flush();
             socket.close();
-        } catch(IOException | InterruptedException e){
+        } catch(IOException e){
             throw new RuntimeException(e);
         }
     }

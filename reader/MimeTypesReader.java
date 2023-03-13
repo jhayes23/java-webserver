@@ -10,7 +10,7 @@ public class MimeTypesReader extends Reader{
         try {
             this.reader = new BufferedReader(new FileReader(path));
         } catch (FileNotFoundException e) {
-            System.out.println("Error loading MimeTypes");
+            //System.out.println("Error loading MimeTypes");
             throw new RuntimeException(e);
         }
     }

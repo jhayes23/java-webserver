@@ -9,7 +9,7 @@ public class ConfReader extends Reader {
         try {
             this.reader = new BufferedReader(new FileReader(path));
         } catch (IOException e) {
-            System.out.println("Error initializing conf reader. File not found.");
+            //System.out.println("Error initializing conf reader. File not found.");
             throw new RuntimeException(e);
         }
     }
@@ -75,9 +75,9 @@ public class ConfReader extends Reader {
                     path = path.substring(0, path.indexOf("\""));
                     config.setDirectoryIndex(path);
                 } else {
-                    System.out.print("Not Supported: ");
+                    //System.out.print("Not Supported: ");
                     String[] splitLine = line.split("\\s+");
-                    System.out.println(Arrays.toString(splitLine));
+                    //System.out.println(Arrays.toString(splitLine));
                     //throw new RuntimeException("HTTPD Parse Error");
                 }
             }

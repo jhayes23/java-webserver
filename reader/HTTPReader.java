@@ -16,7 +16,7 @@ public class HTTPReader extends Reader {
             this.streamReader = new InputStreamReader(stream);
             this.reader = new BufferedReader(streamReader);
         } catch (IOException e) {
-            System.out.println("Error initializing HTTP reader.");
+            //System.out.println("Error initializing HTTP reader.");
             throw new RuntimeException(e);
         }
     }
@@ -49,7 +49,7 @@ public class HTTPReader extends Reader {
                 methodEnum = HTTPMethod.DELETE;
                 break;
             default:
-                methodEnum = null;
+                return null;
         }
         request.setStartLine(new HTTPMessage.RequestStartLine(methodEnum, startLineSplit[1].trim(), startLineSplit[2].trim()));
         line = reader.readLine();
