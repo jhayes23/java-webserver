@@ -3,9 +3,9 @@ package reader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Base64;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.io.IOException;
 public class Htpassword {
@@ -29,7 +29,7 @@ public class Htpassword {
         // as a Base64 encoded string.
         String credentials = new String(
                 Base64.getDecoder().decode( authInfo ),
-                Charset.forName( "UTF-8" )
+                StandardCharsets.UTF_8
         );
         // The string is the key:value pair username:password
         String[] tokens = credentials.split( ":" );

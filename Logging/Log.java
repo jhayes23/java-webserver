@@ -7,7 +7,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -109,7 +108,7 @@ public class Log{
         String outputAuthUser = this.authuser != null ? this.authuser : "-";
         ZonedDateTime currDate = ZonedDateTime.now();
         String outputDate = "[" + currDate.format(DateTimeFormatter.ofPattern("d/MMM/YYYY:HH:mm:ss Z")) + "]";
-        String outputRequest = this.request != null ? "\"" + this.request.toString() + "\"" : "-";
+        String outputRequest = this.request != null ? "\"" + this.request + "\"" : "-";
         String outputStatus = this.status != null ? String.valueOf(this.status.code) : "-";
         String output = String.format("%s %s %s %s %s %s %s",
                 outputIP,
@@ -118,7 +117,7 @@ public class Log{
                 outputDate,
                 outputRequest,
                 outputStatus,
-                String.valueOf(this.bytes)
+                this.bytes
                 );
         System.out.println(output);
         writer.println(output);

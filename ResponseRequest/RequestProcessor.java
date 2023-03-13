@@ -1,9 +1,6 @@
 package ResponseRequest;
 
-import ResponseRequest.HTTPMessage;
-import ResponseRequest.ResponseCode;
 import reader.Htpassword;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +15,10 @@ import java.util.Map;
 public class RequestProcessor{
     private final String docRoot;
     private final String dirIndex;
-    private String method, target, body, queryString;
+    private final String method;
+    private final String target;
+    private final String body;
+    private String queryString;
     private final HashMap<String, String> alias;
     private final HashMap<String, String> headers;
     private long fileSize;

@@ -51,11 +51,11 @@ public class RequestHandler implements Runnable{
                         handler.write("WWW-Authenticate: " + processor.getAuthType() + " realm=" + processor.getAuthName() + "\r\n");
                     } else {
                         if (processor.hasResources()) {
-                            handler.write("Content-Length: " + String.valueOf(processor.getResourceSize()) + "\r\n");
+                            handler.write("Content-Length: " + processor.getResourceSize() + "\r\n");
                             handler.write("Content-Type: " + mimeTypes.get(processor.getExtension()) + "\r\n");
                         }
                         if (processor.isReturnLastModified()) {
-                            handler.write("Last-Modified: " + processor.getLastModified().toString() + "\r\n");
+                            handler.write("Last-Modified: " + processor.getLastModified() + "\r\n");
                         }
                         handler.write("\r\n");
                         if (processor.getResource() != null && processor.getResource().length != 0) {

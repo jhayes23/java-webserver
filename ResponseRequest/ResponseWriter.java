@@ -5,7 +5,7 @@ import java.net.Socket;
 
 public class ResponseWriter {
 
-    private DataOutputStream dataout;
+    private final DataOutputStream dataout;
     public ResponseWriter(Socket socket) {
         try {
             dataout = new DataOutputStream(socket.getOutputStream());
