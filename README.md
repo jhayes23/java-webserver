@@ -72,11 +72,11 @@ To test classes individually, we created main methods and used sample data to te
 (-1) if( expression ) return true; else return false should just return expression  
 (-1) Debug output  
 (-1) unused code paths (i.e. empty else block)" |
-| [] | _5 points_ | Classes, methods, and variables are meaningfully named (no comments exist to explain functionality - the identifiers serve that purpose) | (-1) Unnecessary comments  
+| [✓] | _5 points_ | Classes, methods, and variables are meaningfully named (no comments exist to explain functionality - the identifiers serve that purpose) | (-1) Unnecessary comments  
 (-2) Poorly selected identifiers |
-| [] | _3 points_ | Methods/Classes are small and serve a single purpose | (-1) Method is run on (contains multiple responsiblities that should have been refactored into separate functions)  
+| [✓] | _3 points_ | Methods/Classes are small and serve a single purpose | (-1) Method is run on (contains multiple responsiblities that should have been refactored into separate functions)  
 (-2) Poor class design (SRP violation, missing access modifiers, etc) |
-| [] | _2 points_ | Code is well organized into a meaningful file structure | (-1) Should use packages to organize related code (i.e. config, ResponseRequest, etc.) |
+| [✓] | _2 points_ | Code is well organized into a meaningful file structure | (-1) Should use packages to organize related code (i.e. config, ResponseRequest, etc.) |
 
 ### Documentation (30 points)
 
