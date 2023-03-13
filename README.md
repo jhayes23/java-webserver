@@ -45,13 +45,18 @@ WebServer: Runner, initializes server and creates threads for request processing
 
 **Log:** Generates and outputs to specified log file.
 
+![Alt text](webserver-team-l-uml.png "Webserver UML")
+
 ## Challenges
 
 The hardest part of the project was parsing the requests and then processing them appropriately. We initially had issues with using BufferedReader to read the body of the requests. This was resolved after learning that the request body should be read byte by byte into an array.
+Implementing the Execute Server Scripts functionality was also a challenge as this was a first time using anything like process-builder in java to create new processes. The lecture material on using the class was helpful in getting started.
+
 
 ## Testing Plan
 
 For most of our testing, we used the provided files and curl. Curl was used to test the functionality of the HTTP request types. The provided index.html was used to test threading, authentication, and scripts.
+To test classes individually, we created main methods and used sample data to test each class and their methods before integrating with the rest of the webserver.
 
 ## Rubric (Check completed items)
 
